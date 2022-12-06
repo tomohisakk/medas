@@ -202,10 +202,10 @@ class MEDAEnv(gym.Env):
 					self.is_vlong = False
 
 			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
-				if self.map[self.state[1]][self.state[0]] == self.map_symbols.Dynamic_module:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Static_module
-				elif self.map[self.state[1]+1][self.state[0]] == self.map_symbols.Dynamic_module:
-					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Static_module
+				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
+					self.map[state_[1]][state_[0]] = self.map_symbols.Static_module
+				elif self.map[state_[1]+1][state_[0]] == self.map_symbols.Dynamic_module:
+					self.map[state_[1]+1][state_[0]] = self.map_symbols.Static_module
 				if 8 <= action <= 11:
 					self.is_vlong = False
 			
@@ -230,10 +230,10 @@ class MEDAEnv(gym.Env):
 					self.is_vlong = True
 
 			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
-				if self.map[self.state[1]][self.state[0]] == self.map_symbols.Dynamic_module:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Static_module
-				elif self.map[self.state[1]][self.state[0]+1] == self.map_symbols.Dynamic_module:
-					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Static_module
+				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
+					self.map[state_[1]][state_[0]] = self.map_symbols.Static_module
+				elif self.map[state_[1]][state_[0]+1] == self.map_symbols.Dynamic_module:
+					self.map[state_[1]][state_[0]+1] = self.map_symbols.Static_module
 				if 8 <= action <= 11:
 					self.is_vlong = True
 			

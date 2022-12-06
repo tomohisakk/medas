@@ -214,4 +214,5 @@ def test(save_name, w, h, dsize, s_modules, d_modules):
 
 	save_file.close()
 
-	return (n_critical/10000)
+	return 1
+#	return (n_critical/10000)

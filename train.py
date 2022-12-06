@@ -15,10 +15,10 @@ warnings.filterwarnings("ignore")
 class Params():
 ###########################
 
-	games = 10000
+	games = 100000
 #	nepoches = 100
 	lr = 0.001
-	entropy_beta = 0.01
+	entropy_beta = 0.1
 	batch_size = 32
 	ppo_epoches = 3
 
@@ -26,17 +26,17 @@ class Params():
 	h = 8
 	dsize = 1
 	s_modules = 0
-	d_modules = 0
-	importf = None
+	d_modules = 3
+	importf = "88100/1"
 
 #########################
 
-	useGPU = True
+	useGPU = False
 	env_name = str(w)+str(h)+str(dsize)+str(s_modules)+str(d_modules)
-	gamma = 0.99
+	gamma = 0.9997
 	gae_lambda = 0.95
 	ppo_eps =  0.2
-	ppo_trajectory = 321
+	ppo_trajectory = 1025
 	stop_test_reward = 10000
 	stop_reward = None
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 		logpolicy_t = F.log_softmax(policy_t, dim=1)
 
 		prob_t = F.softmax(policy_t, dim=1)
-		loss_entropy_t = -(prob_t * logpolicy_t).sum(dim=1).mean()
+		loss_entropy_t = (prob_t * logpolicy_t).sum(dim=1).mean()
 
 		logprob_t = logpolicy_t.gather(1, actions_t.unsqueeze(-1)).squeeze(-1)
 		ratio_t = T.exp(logprob_t - old_logprob_t)
