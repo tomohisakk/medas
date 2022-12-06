@@ -39,7 +39,7 @@ class MEDAEnv(gym.Env):
 		self.n_steps = 0
 		self.max_step = 5*(w+h)
 
-		self.state = (0,0)
+		self.state = [0,0]
 		self.goal = (w-1, h-1)
 
 		self.map_symbols = Symbols()
@@ -55,7 +55,7 @@ class MEDAEnv(gym.Env):
 
 	def reset(self, test_map=None):
 		self.n_steps = 0
-		self.state = (0, 0)
+		self.state = [0, 0]
 
 		if self.test_flag == False:
 			self.map = self.mapclass.gen_random_map()
@@ -63,16 +63,21 @@ class MEDAEnv(gym.Env):
 			self.map = test_map
 
 		obs = self._get_obs()
+		self.is_vlong = False
 
 		return obs
 
 	def step(self, action):
+		print(Actions(action))
+		print(self.state)
+		print(self.is_vlong)
 		done = False
 		message = None
 		self.n_steps += 1
 
 		_dist = self._get_dist(self.state, self.goal)
 		self._update_position(action)
+		print(self.state)
 
 #		if self.dynamic_flag == 1:
 #			dist = self._get_dist(self.dynamic_state, self.goal)
@@ -99,7 +104,6 @@ class MEDAEnv(gym.Env):
 #			reward = -0.1
 		else:
 			reward = -0.1
-
 
 #		print(Actions(action))
 		print(self.map)
@@ -165,7 +169,7 @@ class MEDAEnv(gym.Env):
 			if self.is_vlong:
 				#DL
 				state_[1] += 1
-				state_[0] += 1
+				state_[0] -= 1
 				self.is_vlong = False
 			else:
 				#UR
