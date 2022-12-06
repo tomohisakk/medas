@@ -1,0 +1,65 @@
+8x8
+
+1
+
+0.0
+###########################
+
+	games = 10000
+#	nepoches = 100
+	lr = 0.001
+	entropy_beta = 0.01
+	batch_size = 32
+	ppo_epoches = 3
+
+	w = 8
+	h = 8
+	dsize = 1
+	s_modules = 0
+	d_modules = 0
+	importf = None
+
+#########################
+
+0.3
+###########################
+
+	games = 100000
+#	nepoches = 100
+	lr = 0.001
+	entropy_beta = 0.01
+	batch_size = 32
+	ppo_epoches = 3
+
+	w = 8
+	h = 8
+	dsize = 1
+	s_modules = 0
+	d_modules = 3
+	importf = "88100/1"
+
+#########################
+
+26/2600000: reward=-0.34, steps=15, elapsed=14:04:05
+... saveing checkpoint ...
+Test result is  0.9821
+=== Learning end ===
+
+
+###########################
+
+	games = 10000
+#	nepoches = 100
+	lr = 0.001
+	entropy_beta = 0.01
+	batch_size = 32
+	ppo_epoches = 3
+
+	w = 20
+	h = 20
+	dsize = 1
+	s_modules = 0
+	d_modules = 0
+	importf = None
+
+#########################
