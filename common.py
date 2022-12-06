@@ -35,9 +35,9 @@ def setup_ignite(engine: Engine, params: SimpleNamespace, exp_source, run_name: 
 		total_rewards.append(trainer.state.episode_reward)
 		total_n_steps_ep.append(trainer.state.episode_steps)
 
-		if trainer.state.episode % 10000 == 0:
-			mean_reward = np.mean(total_rewards[-10000:])
-			mean_n_steps = np.mean(total_n_steps_ep[-10000:])
+		if trainer.state.episode % 100 == 0:
+			mean_reward = np.mean(total_rewards[-100:])
+			mean_n_steps = np.mean(total_n_steps_ep[-100:])
 			passed = trainer.state.metrics.get('time_passed', 0)
 			print("%d/%d: reward=%.2f, steps=%d, elapsed=%s" % (
 				trainer.state.episode/params.games, trainer.state.episode, 

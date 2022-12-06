@@ -22,7 +22,7 @@ class Params():
 	batch_size = 32
 	ppo_epoches = 3
 
-	w = 10
+	w = 8
 	h = 8
 	dsize = 1
 	s_modules = 0

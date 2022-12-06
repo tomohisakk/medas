@@ -68,16 +68,16 @@ class MEDAEnv(gym.Env):
 		return obs
 
 	def step(self, action):
-		print(Actions(action))
-		print(self.state)
-		print(self.is_vlong)
+#		print(Actions(action))
+#		print(self.state)
+#		print(self.is_vlong)
 		done = False
 		message = None
 		self.n_steps += 1
 
 		_dist = self._get_dist(self.state, self.goal)
 		self._update_position(action)
-		print(self.state)
+#		print(self.state)
 
 #		if self.dynamic_flag == 1:
 #			dist = self._get_dist(self.dynamic_state, self.goal)
@@ -88,11 +88,11 @@ class MEDAEnv(gym.Env):
 		if self.is_vlong and self.state[0]==self.w-1 and self.state[1]==self.h-2:
 			reward = 1
 			done = True
-			print("hgoal")
+#			print("hgoal")
 		elif self.is_vlong==False and self.state[0]==self.w-2 and self.state[1]==self.h-1:
 			reward = 1
 			done = True
-			print("hgoal")
+#			print("vgoal")
 		elif self.n_steps == self.max_step:
 			reward = 0
 			done = True
@@ -106,7 +106,7 @@ class MEDAEnv(gym.Env):
 			reward = -0.1
 
 #		print(Actions(action))
-		print(self.map)
+#		print(self.map)
 
 		obs = self._get_obs()
 
