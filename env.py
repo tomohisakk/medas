@@ -80,10 +80,14 @@ class MEDAEnv(gym.Env):
 #			message = "derror"
 #		else:
 		dist = self._get_dist(self.state, self.goal)
-
-		if dist <= (self.dsize-1)*math.sqrt(2):
+		if self.is_vlong and self.state[0]==self.w-1 and self.state[1]==self.h-2:
 			reward = 1
 			done = True
+			print("hgoal")
+		elif self.is_vlong==False and self.state[0]==self.w-2 and self.state[1]==self.h-1:
+			reward = 1
+			done = True
+			print("hgoal")
 		elif self.n_steps == self.max_step:
 			reward = 0
 			done = True
@@ -98,7 +102,7 @@ class MEDAEnv(gym.Env):
 
 
 #		print(Actions(action))
-#		print(self.map)
+		print(self.map)
 
 		obs = self._get_obs()
 
@@ -148,7 +152,7 @@ class MEDAEnv(gym.Env):
 			state_[1] += 1
 			state_[0] -= 1
 
-		elif action == Actioins.C1:
+		elif action == Actions.C1:
 			if self.is_vlong:
 				#L
 				state_[0] -= 1
@@ -157,7 +161,7 @@ class MEDAEnv(gym.Env):
 				#U
 				state_[1] -= 1
 				self.is_vlong = True
-		elif action == Actioins.C2:
+		elif action == Actions.C2:
 			if self.is_vlong:
 				#DL
 				state_[1] += 1
@@ -168,14 +172,14 @@ class MEDAEnv(gym.Env):
 				state_[0] += 1
 				state_[1] -= 1
 				self.is_vlong = True
-		elif action == Actioins.C3:
+		elif action == Actions.C3:
 			if self.is_vlong:
 				#same
 				self.is_vlong = False
 			else:
 				#same
 				self.is_vlong = True
-		elif action == Actioins.C4:
+		elif action == Actions.C4:
 			if self.is_vlong:
 				#D
 				state_[1] += 1
@@ -190,77 +194,60 @@ class MEDAEnv(gym.Env):
 
 		if self.is_vlong:
 			if 0>state_[0] or 0>state_[1] or state_[0]>self.w-1 or state_[1]+1>self.h-1:
-				self.is_vlong = False
+				if 8 <= action <= 11:
+					self.is_vlong = False
 
 			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
 				if self.map[self.state[1]][self.state[0]] == self.map_symbols.Dynamic_module:
 					self.map[self.state[1]][self.state[0]] = self.map_symbols.Static_module
 				elif self.map[self.state[1]+1][self.state[0]] == self.map_symbols.Dynamic_module:
 					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Static_module
+				if 8 <= action <= 11:
 					self.is_vlong = False
 			
 			elif self._is_touching(state_, self.map_symbols.Static_module):
-				self.is_vlong = False
+				if 8 <= action <= 11:
+					self.is_vlong = False
 
 			else:
-				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
-				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
+				if 8 <= action <= 11:
+					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
+				else:
+					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
 				self.state = state_
 				self.map[self.state[1]][self.state[0]] = self.map_symbols.State
 				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.State
 
+		else:
+			if 0>state_[0] or 0>state_[1] or state_[0]+1>self.w-1 or state_[1]>self.h-1:
+				if 8 <= action <= 11:
+					self.is_vlong = True
 
+			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
+				if self.map[self.state[1]][self.state[0]] == self.map_symbols.Dynamic_module:
+					self.map[self.state[1]][self.state[0]] = self.map_symbols.Static_module
+				elif self.map[self.state[1]][self.state[0]+1] == self.map_symbols.Dynamic_module:
+					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Static_module
+				if 8 <= action <= 11:
+					self.is_vlong = True
+			
+			elif self._is_touching(state_, self.map_symbols.Static_module):
+				if 8 <= action <= 11:
+					self.is_vlong = True
 
-		if (0 <= state_[1] <= self.h-self.dsize) and (0 <= state_[0] <= self.w-self.dsize) and\
-		   (self._is_touching(state_, self.map_symbols.Dynamic_module) == False) and (self._is_touching(state_, self.map_symbols.Static_module) == False):
-#			print("okok")
-			i = 0
-			while True:
-				j = 0
-				while True:
-					self.map[self.state[1]+j][self.state[0]+i] = self.map_symbols.Health
-					j += 1
-					if j == self.dsize:
-						break
-				i += 1
-				if i == self.dsize:
-					break
+			else:
+				if 8 <= action <= 11:
+					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
+				else:
+					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
+				self.state = state_
+				self.map[self.state[1]][self.state[0]] = self.map_symbols.State
+				self.map[self.state[1]][self.state[0]+1] = self.map_symbols.State
 
-#			print(Actions(action))
-#			print(self.state)
-			self.state = state_
-#			print(self.state)
-
-			# Set Droplet state
-			i = 0
-			while True:
-				j = 0
-				while True:
-					self.map[self.state[1]+j][self.state[0]+i] = self.map_symbols.State
-					j += 1
-					if j == self.dsize:
-						break
-				i += 1
-				if i == self.dsize:
-					break
-
-		elif (0 <= state_[1] < self.h-self.dsize+1) and (0 <= state_[0] < self.w-self.dsize+1) and\
-		   (self._is_touching(state_, self.map_symbols.Dynamic_module) == True):
-			self.dynamic_flag += 1
-			self.dynamic_state = state_
-
-			i = 0
-			while True:
-				j = 0
-				while True:
-					if self.map[state_[1]+j][state_[0]+i] == self.map_symbols.Dynamic_module:
-						self.map[state_[1]+j][state_[0]+i] = self.map_symbols.Static_module
-					j += 1
-					if j == self.dsize:
-						break
-				i += 1
-				if i == self.dsize:
-					break
 
 	def _get_obs(self):
 		obs = np.zeros(shape = (3, self.w, self.h))
