@@ -87,7 +87,7 @@ class PPO(nn.Module):
 		super(PPO, self).__init__()
 
 		self.conv = nn.Sequential(
-			nn.Conv2d(input_shape[0], 12, kernel_size=3, stride=1),
+			nn.Conv2d(input_shape[0], 12, kernel_size=3, stride=1, padding=1),
 			nn.ReLU(),
 			nn.Conv2d(12, 24, kernel_size=3, stride=1),
 			nn.ReLU(),
@@ -96,7 +96,7 @@ class PPO(nn.Module):
 		)
 
 		conv_out_size = self._get_conv_out(input_shape)
-		hidden_size = 64
+		hidden_size = 256
 #		print(hidden_size)
 
 		self.actor = nn.Sequential(

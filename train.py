@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 class Params():
 ###########################
 
-	games = 100000
+	games = 10000
 #	nepoches = 100
 	lr = 0.001
 	entropy_beta = 0.01
@@ -26,8 +26,8 @@ class Params():
 	h = 8
 	dsize = 1
 	s_modules = 0
-	d_modules = 3
-	importf = "88100/1"
+	d_modules = 0
+	importf = None
 
 #########################
 
