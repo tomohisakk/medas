@@ -18,7 +18,7 @@ class Params():
 	games = 100000
 #	nepoches = 100
 	lr = 0.001
-	entropy_beta = 0.1
+	entropy_beta = 0.01
 	batch_size = 32
 	ppo_epoches = 3
 
@@ -35,7 +35,7 @@ class Params():
 	env_name = str(w)+str(h)+str(dsize)+str(s_modules)+str(d_modules)
 	gamma = 0.9997
 	gae_lambda = 0.95
-	ppo_eps =  0.2
+	ppo_eps =  0
 	ppo_trajectory = 1025
 	stop_test_reward = 10000
 	stop_reward = None

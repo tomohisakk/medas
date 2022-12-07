@@ -196,10 +196,23 @@ class MEDAEnv(gym.Env):
 			print("Unexpected action")
 			return 0
 
+		
+
 		if self.is_vlong:
 			if 0>state_[0] or 0>state_[1] or state_[0]>self.w-1 or state_[1]+1>self.h-1:
 				if 8 <= action <= 11:
 					self.is_vlong = False
+
+			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Static_module:
+				return
+			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Static_module:
+				return
+			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Dynamic_module:
+				self.map[self.state[1]][state_[0]] = self.map_symbols.Static_module
+				return
+			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Dynamic_module:
+				self.map[state_[1]][self.state[0]] = self.map_symbols.Static_module
+				return
 
 			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
 				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
@@ -228,6 +241,11 @@ class MEDAEnv(gym.Env):
 			if 0>state_[0] or 0>state_[1] or state_[0]+1>self.w-1 or state_[1]>self.h-1:
 				if 8 <= action <= 11:
 					self.is_vlong = True
+
+			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Static_module:
+				return
+			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Static_module:
+				return
 
 			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
 				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
