@@ -49,7 +49,7 @@ class MEDAEnv(gym.Env):
 		self.test_flag = test_flag
 
 		self.dynamic_flag = 0
-		self.dynamic_state = (0,0)
+#		self.dynamic_state = (0,0)
 
 		self.is_vlong = False
 
@@ -75,16 +75,16 @@ class MEDAEnv(gym.Env):
 		message = None
 		self.n_steps += 1
 
-		_dist = self._get_dist(self.state, self.goal)
+#		_dist = self._get_dist(self.state, self.goal)
 		self._update_position(action)
-#		print(self.state)
 
 #		if self.dynamic_flag == 1:
 #			dist = self._get_dist(self.dynamic_state, self.goal)
 #			self.dynamic_flag = 0
 #			message = "derror"
 #		else:
-		dist = self._get_dist(self.state, self.goal)
+#		dist = self._get_dist(self.state, self.goal)
+
 		if self.is_vlong and self.state[0]==self.w-1 and self.state[1]==self.h-2:
 			reward = 1
 			done = True
@@ -112,10 +112,10 @@ class MEDAEnv(gym.Env):
 
 		return obs, reward, done, message
 
-	def _get_dist(self, state1, state2):
-		diff_x = state1[1] - state2[1]
-		diff_y = state1[0] - state2[0]
-		return math.sqrt(diff_x*diff_x + diff_y*diff_y)
+#	def _get_dist(self, state1, state2):
+#		diff_x = state1[1] - state2[1]
+#		diff_y = state1[0] - state2[0]
+#		return math.sqrt(diff_x*diff_x + diff_y*diff_y)
 
 	def _is_touching(self, state, obj):
 		if self.is_vlong:
@@ -195,8 +195,6 @@ class MEDAEnv(gym.Env):
 		else:
 			print("Unexpected action")
 			return 0
-
-		
 
 		if self.is_vlong:
 			if 0>state_[0] or 0>state_[1] or state_[0]>self.w-1 or state_[1]+1>self.h-1:
