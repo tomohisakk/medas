@@ -87,11 +87,11 @@ class PPO(nn.Module):
 		super(PPO, self).__init__()
 
 		self.conv = nn.Sequential(
-			nn.Conv2d(input_shape[0], 12, kernel_size=3, stride=1, padding=1),
+			nn.Conv2d(input_shape[0], 32, kernel_size=3, stride=1, padding=1, bias=False),
 			nn.ReLU(),
-			nn.Conv2d(12, 24, kernel_size=3, stride=1),
+			nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False),
 			nn.ReLU(),
-			nn.Conv2d(24, 24, kernel_size=3, stride=1),
+			nn.Conv2d(64, 64, kernel_size=3, stride=1, bias=False),
 			nn.ReLU()
 		)
 

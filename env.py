@@ -200,74 +200,91 @@ class MEDAEnv(gym.Env):
 			if 0>state_[0] or 0>state_[1] or state_[0]>self.w-1 or state_[1]+1>self.h-1:
 				if 8 <= action <= 11:
 					self.is_vlong = False
-
-			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Static_module:
-				return
-			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Static_module:
-				return
-			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Dynamic_module:
-				self.map[self.state[1]][state_[0]] = self.map_symbols.Static_module
-				return
-			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Dynamic_module:
-				self.map[state_[1]][self.state[0]] = self.map_symbols.Static_module
 				return
 
-			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
+			if 4<=action<=7:
+				if self.map[self.state[1]][state_[0]]== self.map_symbols.Dynamic_module:
+					self.map[self.state[1]][state_[0]] = self.map_symbols.Static_module
+				if self.map[state_[1]][self.state[0]]== self.map_symbols.Dynamic_module:
+					self.map[state_[1]][self.state[0]] = self.map_symbols.Static_module
+				if self.map[self.state[1]+1][state_[0]]== self.map_symbols.Dynamic_module:
+					self.map[self.state[1]+1][state_[0]] = self.map_symbols.Static_module
+				if self.map[state_[1]+1][self.state[0]]== self.map_symbols.Dynamic_module:
+					self.map[state_[1]+1][self.state[0]] = self.map_symbols.Static_module
+				if self.map[self.state[1]][state_[0]]==self.map_symbols.Static_module or\
+				   self.map[state_[1]][self.state[0]]==self.map_symbols.Static_module or\
+				   self.map[self.state[1]+1][state_[0]]==self.map_symbols.Static_module or\
+				   self.map[state_[1]+1][self.state[0]]==self.map_symbols.Static_module:
+						return
+
+			if self._is_touching(state_, self.map_symbols.Dynamic_module):
 				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
 					self.map[state_[1]][state_[0]] = self.map_symbols.Static_module
-				elif self.map[state_[1]+1][state_[0]] == self.map_symbols.Dynamic_module:
+				if self.map[state_[1]+1][state_[0]] == self.map_symbols.Dynamic_module:
 					self.map[state_[1]+1][state_[0]] = self.map_symbols.Static_module
 				if 8 <= action <= 11:
 					self.is_vlong = False
+				return
 			
-			elif self._is_touching(state_, self.map_symbols.Static_module):
+			if self._is_touching(state_, self.map_symbols.Static_module):
 				if 8 <= action <= 11:
 					self.is_vlong = False
+				return
 
+			if 8 <= action <= 11:
+				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+				self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
 			else:
-				if 8 <= action <= 11:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
-					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
-				else:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
-					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
-				self.state = state_
-				self.map[self.state[1]][self.state[0]] = self.map_symbols.State
-				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.State
+				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
+			self.state = state_
+			self.map[self.state[1]][self.state[0]] = self.map_symbols.State
+			self.map[self.state[1]+1][self.state[0]] = self.map_symbols.State
 
 		else:
 			if 0>state_[0] or 0>state_[1] or state_[0]+1>self.w-1 or state_[1]>self.h-1:
 				if 8 <= action <= 11:
 					self.is_vlong = True
-
-			elif 4<=action<=7 and self.map[self.state[1]][state_[0]]== self.map_symbols.Static_module:
-				return
-			elif 4<=action<=7 and self.map[state_[1]][self.state[0]]== self.map_symbols.Static_module:
 				return
 
-			elif self._is_touching(state_, self.map_symbols.Dynamic_module):
+			if 4<=action<=7:
+				if self.map[self.state[1]][state_[0]]== self.map_symbols.Dynamic_module:
+					self.map[self.state[1]][state_[0]] = self.map_symbols.Static_module
+				if self.map[state_[1]][self.state[0]]== self.map_symbols.Dynamic_module:
+					self.map[state_[1]][self.state[0]] = self.map_symbols.Static_module
+				if self.map[self.state[1]][state_[0]+1]== self.map_symbols.Dynamic_module:
+					self.map[self.state[1]][state_[0]+1] = self.map_symbols.Static_module
+				if self.map[state_[1]][self.state[0]+1]== self.map_symbols.Dynamic_module:
+					self.map[state_[1]][self.state[0]+1] = self.map_symbols.Static_module
+				if self.map[self.state[1]][state_[0]]==self.map_symbols.Static_module or\
+				   self.map[state_[1]][self.state[0]]==self.map_symbols.Static_module or\
+				   self.map[self.state[1]][state_[0]+1]==self.map_symbols.Static_module or\
+				   self.map[state_[1]][self.state[0]+1]==self.map_symbols.Static_module:
+						return
+
+			if self._is_touching(state_, self.map_symbols.Dynamic_module):
 				if self.map[state_[1]][state_[0]] == self.map_symbols.Dynamic_module:
 					self.map[state_[1]][state_[0]] = self.map_symbols.Static_module
 				elif self.map[state_[1]][state_[0]+1] == self.map_symbols.Dynamic_module:
 					self.map[state_[1]][state_[0]+1] = self.map_symbols.Static_module
 				if 8 <= action <= 11:
 					self.is_vlong = True
+				return
 			
-			elif self._is_touching(state_, self.map_symbols.Static_module):
+			if self._is_touching(state_, self.map_symbols.Static_module):
 				if 8 <= action <= 11:
 					self.is_vlong = True
+				return
 
+			if 8 <= action <= 11:
+				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
 			else:
-				if 8 <= action <= 11:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
-					self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
-				else:
-					self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
-					self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
-				self.state = state_
-				self.map[self.state[1]][self.state[0]] = self.map_symbols.State
-				self.map[self.state[1]][self.state[0]+1] = self.map_symbols.State
-
+				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
+				self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
+			self.state = state_
+			self.map[self.state[1]][self.state[0]] = self.map_symbols.State
+			self.map[self.state[1]][self.state[0]+1] = self.map_symbols.State
 
 	def _get_obs(self):
 		obs = np.zeros(shape = (3, self.w, self.h))
