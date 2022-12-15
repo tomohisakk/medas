@@ -21,7 +21,7 @@ from map import Symbols
 def setup_ignite(engine: Engine, params: SimpleNamespace, exp_source, run_name: str, 
 				 net, optimizer, scheduler, extra_metrics: Iterable[str] = ()):
 	warnings.simplefilter("ignore", category=UserWarning)
-	handler = ptan_ignite.EndOfEpisodeHandler(exp_source, bound_avg_reward=params.stop_reward)
+	handler = ptan_ignite.EndOfEpisodeHandler(exp_source, bound_avg_reward=np.inf)
 	handler.attach(engine)
 	ptan_ignite.EpisodeFPSHandler().attach(engine)
 
@@ -35,9 +35,9 @@ def setup_ignite(engine: Engine, params: SimpleNamespace, exp_source, run_name: 
 		total_rewards.append(trainer.state.episode_reward)
 		total_n_steps_ep.append(trainer.state.episode_steps)
 
-		if trainer.state.episode % 100 == 0:
-			mean_reward = np.mean(total_rewards[-100:])
-			mean_n_steps = np.mean(total_n_steps_ep[-100:])
+		if trainer.state.episode % 10000 == 0:
+			mean_reward = np.mean(total_rewards[-10000:])
+			mean_n_steps = np.mean(total_n_steps_ep[-10000:])
 			passed = trainer.state.metrics.get('time_passed', 0)
 			print("%d/%d: reward=%.2f, steps=%d, elapsed=%s" % (
 				trainer.state.episode/params.games, trainer.state.episode, 
@@ -50,34 +50,30 @@ def setup_ignite(engine: Engine, params: SimpleNamespace, exp_source, run_name: 
 			tmp = test(save_name, params.w, params.h, params.dsize, params.s_modules, params.d_modules)
 			if tmp != 0:
 				engine.terminate()
-				print("=== Learning end ===")
-#				good_results.append(trainer.state.episode)
-#				good_results.append(tmp)
+				if tmp == 1.0:
+					engine.terminate()
+				good_results.append(trainer.state.episode/params.games)
+				good_results.append(tmp)
 
-#			if trainer.state.episode/params.games == params.nepoches:
-#				engine.terminate()
-#				print(good_results)
-#				print("=== Learning end ===")
+			if len(good_results)!=0 and trainer.state.episode/params.games == good_results[0]:
+				scheduler.step()
+				print("LR: ", optimizer.param_groups[0]['lr'])
 
-			if trainer.state.episode/params.games == 10:
+			if len(good_results)!=0 and trainer.state.episode/params.games == (good_results[0]+10):
+				print("=== Good Results===")
+				print(good_results)
+				engine.terminate()
+
+			if len(good_results)==0 and trainer.state.episode/params.games==10:
 				scheduler.step()
 				print()
 				print("LR: ", optimizer.param_groups[0]['lr'])
 				print()
 
-#			if trainer.state.episode/params.games == 30:
+#			if len(good_results)==0 and trainer.state.episode/params.games==50:
 #				scheduler.step()
 #				print()
 #				print("LR: ", optimizer.param_groups[0]['lr'])
-#				print()
-
-#			if trainer.state.episode/params.games == 20:
-#				scheduler.step()
-#				print()
-#				print("LR: ", optimizer.param_groups[0]['lr'])
-#				print()
-
-#				print(good_results)
 #				print()
 
 	logdir = f"runs/{params.env_name}"
@@ -92,7 +88,7 @@ def setup_ignite(engine: Engine, params: SimpleNamespace, exp_source, run_name: 
 	tb.attach(engine, log_handler=handler, event_name=event)
 
 	ptan_ignite.PeriodicEvents().attach(engine)
-	metrics = ['avg_loss', 'avg_fps']
+	metrics = ['avg_loss']
 	metrics.extend(extra_metrics)
 	handler = tb_logger.OutputHandler(
 		tag="train", metric_names=metrics,
@@ -214,5 +210,6 @@ def test(save_name, w, h, dsize, s_modules, d_modules):
 
 	save_file.close()
 
-	return 1
-#	return (n_critical/10000)
+	return (n_critical/10000)
+
+

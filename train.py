@@ -15,36 +15,41 @@ warnings.filterwarnings("ignore")
 class Params():
 ###########################
 
-	games = 10000
+	games = 100000
 #	nepoches = 100
-	lr = 0.001
-	entropy_beta = 0.3
+	lr = .001
+	entropy_beta = .3
 	batch_size = 32
 	ppo_epoches = 3
 
 	w = 8
 	h = 8
 	dsize = 1
-	s_modules = 0
+	s_modules = 3
 	d_modules = 0
 	importf = None
 
 #########################
 
-	useGPU = False
+	useGPU = True
 	env_name = str(w)+str(h)+str(dsize)+str(s_modules)+str(d_modules)
 	gamma = 0.9997
 	gae_lambda = 0.95
 	ppo_eps =  0.2
-	ppo_trajectory = 1025
 	stop_test_reward = 10000
 	stop_reward = None
+#	n_actors = 4
+	ppo_trajectory = 2048
 
 params = Params()
 
 if __name__ == "__main__":
 	T.manual_seed(1)
+
+#	envs = []
+#	for _ in range(params.n_actors):
 	env = MEDAEnv(w=params.w, h=params.h, dsize=params.dsize, s_modules=params.s_modules, d_modules=params.d_modules)
+#		envs.append(env)
 
 	if params.useGPU == True:
 		device = T.device('cuda:0' if T.cuda.is_available else 'cpu')
@@ -57,13 +62,13 @@ if __name__ == "__main__":
 		net.load_checkpoint(params.importf)
 	print(net)
 
-	agent = ptan.agent.PolicyAgent(lambda x: net(x)[0], apply_softmax=False,
+	agent = ptan.agent.PolicyAgent(lambda x: net(x)[0], apply_softmax=True,
 								   preprocessor=ptan.agent.float32_preprocessor,
 								   device=device)
 
 	exp_source = ptan.experience.ExperienceSource(env, agent, steps_count=1)
 
-#	optimizer = optim.Adam(net.parameters(), lr=params.lr, eps=1e-3)
+#	optimizer = optim.Adam(net.parameters(), lr=params.lr, eps=0.1)
 	optimizer = optim.SGD(net.parameters(), lr=params.lr, momentum=0.9)
 
 	scheduler = T.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.1)
@@ -94,7 +99,7 @@ if __name__ == "__main__":
 		clipped_surr_t = adv_t * T.clamp(ratio_t, 1.0 - params.ppo_eps, 1.0 + params.ppo_eps)
 		loss_policy_t = T.min(surr_obj_t, clipped_surr_t).mean()
 
-		loss_t = -loss_policy_t + loss_value_t -params.entropy_beta * loss_entropy_t
+		loss_t = -loss_policy_t + loss_value_t - params.entropy_beta * loss_entropy_t
 #		print(loss_t)
 		loss_t.backward()
 		optimizer.step()
@@ -103,9 +108,7 @@ if __name__ == "__main__":
 			"loss": loss_t.item(),
 			"loss_value": loss_value_t.item(),
 			"loss_policy": loss_policy_t.item(),
-			"adv": adv_t.mean().item(),
 			"loss_entropy": loss_entropy_t.item(),
-			"time_batch": time.time() - start_ts,
 		})
 
 		return res

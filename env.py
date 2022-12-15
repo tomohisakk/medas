@@ -53,9 +53,12 @@ class MEDAEnv(gym.Env):
 
 		self.is_vlong = False
 
+		self.is_move = False
+
 	def reset(self, test_map=None):
 		self.n_steps = 0
 		self.state = [0, 0]
+		self.is_move = False
 
 		if self.test_flag == False:
 			self.map = self.mapclass.gen_random_map()
@@ -71,6 +74,7 @@ class MEDAEnv(gym.Env):
 #		print(Actions(action))
 #		print(self.state)
 #		print(self.is_vlong)
+		self.is_move = False
 		done = False
 		message = None
 		self.n_steps += 1
@@ -85,23 +89,33 @@ class MEDAEnv(gym.Env):
 #		else:
 #		dist = self._get_dist(self.state, self.goal)
 
+
 		if self.is_vlong and self.state[0]==self.w-1 and self.state[1]==self.h-2:
-			reward = 1
+			reward = 0
 			done = True
 #			print("hgoal")
 		elif self.is_vlong==False and self.state[0]==self.w-2 and self.state[1]==self.h-1:
-			reward = 1
+			reward = 0
 			done = True
 #			print("vgoal")
 		elif self.n_steps == self.max_step:
-			reward = 0
+			reward = -1.0
 			done = True
 		elif self.dynamic_flag == 1:
 			reward = 0
 			self.dynamic_flag = 0
 			message = "derror"
-#		elif dist < _dist:
-#			reward = -0.1
+		elif self.is_move:
+			if self.is_vlong:
+				if action==Actions.R or action==Actions.L or Actions.C1<=action<=Actions.C4:
+					reward = -0.1
+				else:
+					reward = -0.2
+			else:
+				if action==Actions.U or action==Actions.D or Actions.C1<=action<=Actions.C4:
+					reward = -0.1
+				else:
+					reward = -0.2
 		else:
 			reward = -0.1
 
@@ -238,6 +252,7 @@ class MEDAEnv(gym.Env):
 				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
 				self.map[self.state[1]+1][self.state[0]] = self.map_symbols.Health
 			self.state = state_
+			self.is_move = True
 			self.map[self.state[1]][self.state[0]] = self.map_symbols.State
 			self.map[self.state[1]+1][self.state[0]] = self.map_symbols.State
 
@@ -283,6 +298,7 @@ class MEDAEnv(gym.Env):
 				self.map[self.state[1]][self.state[0]] = self.map_symbols.Health
 				self.map[self.state[1]][self.state[0]+1] = self.map_symbols.Health
 			self.state = state_
+			self.is_move = True
 			self.map[self.state[1]][self.state[0]] = self.map_symbols.State
 			self.map[self.state[1]][self.state[0]+1] = self.map_symbols.State
 

@@ -21,7 +21,7 @@ def batch_generator(exp_source, net, trajectory_size, ppo_epoches,
 		trj_dones.append(exp.done)
 		if exp.done:
 			last_done_index = len(trj_states)-1
-		if len(trj_states) < trajectory_size:
+		if len(trj_states) < trajectory_size+1:
 			continue
 		if last_done_index is None or last_done_index == len(trj_states)-1:
 			continue
@@ -87,11 +87,11 @@ class PPO(nn.Module):
 		super(PPO, self).__init__()
 
 		self.conv = nn.Sequential(
-			nn.Conv2d(input_shape[0], 32, kernel_size=3, stride=1, padding=1, bias=False),
+			nn.Conv2d(input_shape[0], 32, kernel_size=3, stride=1),
 			nn.ReLU(),
-			nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False),
+			nn.Conv2d(32, 64, kernel_size=3, stride=1),
 			nn.ReLU(),
-			nn.Conv2d(64, 64, kernel_size=3, stride=1, bias=False),
+			nn.Conv2d(64, 64, kernel_size=3, stride=1),
 			nn.ReLU()
 		)
 
@@ -102,8 +102,7 @@ class PPO(nn.Module):
 		self.actor = nn.Sequential(
 			nn.Linear(conv_out_size, int(hidden_size)),
 			nn.ReLU(),
-			nn.Linear(int(hidden_size), n_actions),
-			nn.Softmax(dim=-1)
+			nn.Linear(int(hidden_size), n_actions)
 		)
 		self.critic = nn.Sequential(
 			nn.Linear(conv_out_size, int(hidden_size)),
